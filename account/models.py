@@ -19,6 +19,8 @@ class MyAccountManager(BaseUserManager):
             email=self.normalize_email(email),
             username=username,
             profile_pic=profile_pic,
+            first_name=first_name,
+            last_name=last_name,
             is_org=is_org,
             bio=bio
         )
@@ -33,6 +35,8 @@ class MyAccountManager(BaseUserManager):
             username=username,
             password=password,
             profile_pic=profile_pic,
+            first_name=first_name,
+            last_name=last_name,
             is_org=is_org,
             bio=bio
         )
