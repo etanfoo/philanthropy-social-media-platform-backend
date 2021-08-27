@@ -9,9 +9,10 @@ class Post(models.Model):
     title = models.TextField()
     description = models.TextField()
     is_mission = models.BooleanField()
+    is_shared = models.BooleanField()
     time_created = models.DateTimeField(default = timezone.now)
     dollar_target = models.IntegerField()
-    current_dollar = models.IntegerField()
+    current_dollar = models.IntegerField(default = 0)
 
     def __str__(self):
         return self.title

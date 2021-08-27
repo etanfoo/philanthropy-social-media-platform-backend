@@ -19,7 +19,7 @@ def create_post_view(request):
 
         data = {}
         if serializer.is_valid():
-            print("serialiser is valid")
+            #print("serialiser is valid")
             post = serializer.save()
             data['post_id'] = post.pk
             data['image_url'] = post.image_url
@@ -27,6 +27,7 @@ def create_post_view(request):
             data['title'] = post.title
             data['description'] = post.description
             data['is_mission'] = post.is_mission
+            data['is_shared'] = post.is_shared
             data['time_created'] = post.time_created
             data['dollar_target'] = post.dollar_target
             data['current_dollar'] = post.current_dollar
