@@ -17,7 +17,7 @@ class PostSerializer(serializers.ModelSerializer):
 class PostCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['image_url', 'account_id', 'title', 'description', 'is_mission', 'time_created', 'dollar_target', 'current_dollar']
+        fields = ['image_url', 'account_id', 'title', 'description', 'is_mission', 'is_shared', 'time_created', 'dollar_target', 'current_dollar']
 
     def save(self):
         try:
@@ -26,9 +26,10 @@ class PostCreateSerializer(serializers.ModelSerializer):
             title = self.validated_data['title']
             description = self.validated_data['description']
             is_mission = self.validated_data['is_mission']
+            is_shared = self.validated_data['is_shared']
             dollar_target = self.validated_data['dollar_target']
-            current_dollar = self.validated_data['current_dollar']
-            time_created = self.validated_data['time_created']
+            #current_dollar = self.validated_data['current_dollar']
+            #time_created = self.validated_data['time_created']
 
             post = Post(
                 image_url = image_url,
@@ -36,9 +37,9 @@ class PostCreateSerializer(serializers.ModelSerializer):
                 title = title,
                 description = description,
                 is_mission = is_mission,
-                time_created = time_created,
+                is_shared = is_shared,
                 dollar_target = dollar_target,
-                current_dollar = current_dollar,
+                
             )
 
             post.save()
