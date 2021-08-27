@@ -9,7 +9,7 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
 class MyAccountManager(BaseUserManager):
-    def create_user(self, email, username, password, profile_pic, bio, is_org):
+    def create_user(self, email, username, password, profile_pic, bio, first_name, last_name, is_org):
         if not email:
             raise ValueError('Users must have an email address')
         if not username:
@@ -27,7 +27,7 @@ class MyAccountManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, username, password, profile_pic='', bio='', is_org=True):
+    def create_superuser(self, email, username, password, profile_pic='', bio='',  first_name='', last_name='', is_org=True):
         user = self.create_user(
             email=self.normalize_email(email),
             username=username,
