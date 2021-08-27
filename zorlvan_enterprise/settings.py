@@ -46,6 +46,9 @@ INSTALLED_APPS = [
 
     # apps
     'account',
+    'Post',
+    'Donate',
+    'Subscription',
 
     # allow cors
     'corsheaders',
