@@ -3,7 +3,7 @@ from account.models import Account
 from Post.models import Post
 
 # Create your models here.
-class Post(models.Model):
+class Donate(models.Model):
     account_id_from = models.ForeignKey(Account, on_delete = models.CASCADE)
     post_id_to = models.ForeignKey(Post, on_delete = models.CASCADE)
     amount = models.IntegerField()
