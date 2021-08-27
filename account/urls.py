@@ -4,6 +4,7 @@ from account.views import(
     LoginView,
     account_profile_view,
     logout_view,
+    ApiAccountListView
 )
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -14,4 +15,5 @@ urlpatterns = [
     path('login', LoginView.as_view()), 
     path('profile', account_profile_view),
     path('logout', logout_view),
+    path('explore', ApiAccountListView.as_view())
 ]

@@ -3,11 +3,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from rest_framework.generics import UpdateAPIView
+from rest_framework.generics import UpdateAPIView, ListAPIView
 from django.contrib.auth import authenticate, logout
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django.db.models import Q
 from account.serializers import RegistrationSerializer, AccountProfileSerializer
 from account.models import Account
 from rest_framework.authtoken.models import Token
@@ -35,7 +37,7 @@ def registration_view(request):
         account = serializer.save()
         data['response'] = 'Registration successful!'
     else:
-        data = serializer.errors
+        Response(data, status=status.HTTP_400_BAD_REQUEST)
     return Response(data)
 
 # LOGIN
@@ -65,6 +67,7 @@ class LoginView(APIView):
         else:
             res['response'] = 'ERROR'
             res['error_message'] = 'Invalid username/password'
+            return Response(res, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(res)
 
@@ -76,14 +79,34 @@ def account_profile_view(request):
     try:
         account = Account.objects.get(pk=user_id)
     except:
-        return Response({'response': 'Account does not exist!'})
+        return Response({'response': 'Account does not exist!'}, status=status.HTTP_404_NOT_FOUND)
 
     serializer = AccountProfileSerializer(account)
     return Response(serializer.data)
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes((IsAuthenticated,))
 def logout_view(request):
     request.user.auth_token.delete()
     logout(request)
     return Response('Successfully Logged Out')
+
+
+@permission_classes((IsAuthenticated,))
+class ApiAccountListView(ListAPIView):
+    serializer_class = AccountProfileSerializer
+    pagination_class = PageNumberPagination
+    filter_backends = (SearchFilter, OrderingFilter,)
+    search_fields = ('username')
+    
+    def get_queryset(self):
+        query = self.request.GET.get('username')
+        if query is not None:
+            queryset = Account.objects.filter(
+                Q(username__icontains=query)
+                ).order_by('date_joined')
+            print(queryset)
+        else: 
+            queryset = Account.objects.all().order_by('-date_joined')
+
+        return queryset
