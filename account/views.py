@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.generics import UpdateAPIView
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, logout
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
@@ -80,3 +80,10 @@ def account_profile_view(request):
 
     serializer = AccountProfileSerializer(account)
     return Response(serializer.data)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def logout_view(request):
+    request.user.auth_token.delete()
+    logout(request)
+    return Response('Successfully Logged Out')
