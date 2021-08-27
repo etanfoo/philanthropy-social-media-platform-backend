@@ -75,7 +75,7 @@ class LoginView(APIView):
 @permission_classes((IsAuthenticated,))
 def account_profile_view(request):
     print(request.user)
-    user_id = request.data.get('user_id')
+    user_id = request.GET.get('user_id')
     try:
         account = Account.objects.get(pk=user_id)
     except:
