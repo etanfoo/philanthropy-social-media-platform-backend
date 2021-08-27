@@ -37,6 +37,8 @@ class MyAccountManager(BaseUserManager):
             first_name=first_name,
             last_name=last_name,
             profile_pic=profile_pic,
+            first_name=first_name,
+            last_name=last_name,
             is_org=is_org,
             bio=bio
         )
