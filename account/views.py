@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
-from account.serializers import RegistrationSerializer
+from account.serializers import RegistrationSerializer, AccountProfileSerializer
 from account.models import Account
 from rest_framework.authtoken.models import Token
 from account.validators import valid_email, valid_username
@@ -67,3 +67,15 @@ class LoginView(APIView):
             res['error_message'] = 'Invalid username/password'
 
         return Response(res)
+
+@api_view(['GET', ])
+@permission_classes([])
+def account_profile_view(request):
+    user_id = request.data.get('user_id')
+    try:
+        account = Account.objects.get(pk=user_id)
+    except:
+        return Response({'response': 'Account does not exist!'})
+
+    serializer = AccountProfileSerializer(account)
+    return Response(serializer.data)
