@@ -1,0 +1,1 @@
+web: gunicorn zorlvan_enterprise.wsgi --log-file -
