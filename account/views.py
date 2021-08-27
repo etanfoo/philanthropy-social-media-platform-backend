@@ -69,8 +69,9 @@ class LoginView(APIView):
         return Response(res)
 
 @api_view(['GET', ])
-@permission_classes([])
+@permission_classes((IsAuthenticated,))
 def account_profile_view(request):
+    print(request.user)
     user_id = request.data.get('user_id')
     try:
         account = Account.objects.get(pk=user_id)
