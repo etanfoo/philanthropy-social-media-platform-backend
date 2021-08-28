@@ -9,10 +9,10 @@ class Post(models.Model):
     title = models.TextField()
     description = models.TextField()
     is_mission = models.BooleanField()
-    is_shared = models.BooleanField()
+    is_shared = models.ForeignKey('self', on_delete = models.CASCADE, null = True, blank = True, default = None)
     time_created = models.DateTimeField(default = timezone.now)
-    dollar_target = models.IntegerField()
-    current_dollar = models.IntegerField(default = 0)
+    dollar_target = models.IntegerField(blank = True)
+    current_dollar = models.IntegerField(blank = True, default = 0)
 
     def __str__(self):
         return self.title

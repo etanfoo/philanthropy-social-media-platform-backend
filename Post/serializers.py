@@ -26,7 +26,10 @@ class PostCreateSerializer(serializers.ModelSerializer):
             title = self.validated_data['title']
             description = self.validated_data['description']
             is_mission = self.validated_data['is_mission']
-            is_shared = self.validated_data['is_shared']
+            if ('is_shared' in self.validated_data):
+                is_shared = self.validated_data['is_shared']
+            else:
+                is_shared = None
             dollar_target = self.validated_data['dollar_target']
             #current_dollar = self.validated_data['current_dollar']
             #time_created = self.validated_data['time_created']
