@@ -62,6 +62,7 @@ class Account(AbstractBaseUser):
     is_active               = models.BooleanField(default=True)
     is_staff                = models.BooleanField(default=False)
     is_superuser            = models.BooleanField(default=False)
+    #subscriptions           = models.ManyToManyField('self', symmetrical=False, blank=True)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
@@ -77,6 +78,12 @@ class Account(AbstractBaseUser):
     # Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
     def has_module_perms(self, app_label):
         return True
+    
+    '''def count_subscriptions(self):
+        return self.subscriptions.count()
+    
+    def count_subscribers(self):
+        return Account.objects.filter(subscriptions=self).count()'''
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):

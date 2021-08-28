@@ -26,6 +26,17 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return account
 
 class AccountProfileSerializer(serializers.ModelSerializer):
+    subscriber_count = serializers.SerializerMethodField('get_subscriber_count')
+    subscribing_count = serializers.SerializerMethodField('get_subscribing_count')
+    
+    def get_subscriber_count(self, account):
+        queryset = account.to_account_id.all()
+        return len(queryset)
+    
+    def get_subscribing_count(self, account):
+        queryset = account.from_account_id.all()
+        return len(queryset)
+    
     class Meta:
         model = Account
-        fields = ['pk', 'email', 'username', 'first_name', 'last_name', 'bio', 'profile_pic', 'is_org']
+        fields = ['pk', 'email', 'username', 'first_name', 'last_name', 'bio', 'profile_pic', 'is_org', 'subscriber_count', 'subscribing_count']

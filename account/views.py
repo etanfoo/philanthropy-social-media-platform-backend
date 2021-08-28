@@ -110,3 +110,20 @@ class ApiAccountListView(ListAPIView):
             queryset = Account.objects.all().order_by('-date_joined')
 
         return queryset
+
+@api_view(['GET', ])
+@permission_classes((IsAuthenticated,))
+def get_subscriber_view(request):
+    user = request.user
+    yeet = user.to_account_id.all()
+    ret = [AccountProfileSerializer(y.to_account_id).data for y in yeet]
+    return Response({'subscribers': ret})
+
+
+@api_view(['GET', ])
+@permission_classes((IsAuthenticated,))
+def get_subscribing_view(request):
+    user = request.user
+    yeet = user.from_account_id.all()
+    ret = [AccountProfileSerializer(y.from_account_id).data for y in yeet]
+    return Response({'subscribing': ret})

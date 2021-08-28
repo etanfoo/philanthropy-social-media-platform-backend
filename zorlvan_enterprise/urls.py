@@ -18,13 +18,10 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 from django.conf import settings
-from account.views import (
-	registration_view,
-	LoginView,
-)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
+    path('account/', include('Subscription.urls')),
     path('post/', include('Post.urls'))
 ]
