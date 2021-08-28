@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
-from Post.serializers import PostCreateSerializer, PostSerializer
+from Post.serializers import PostCreateSerializer, PostSerializer, PostUpdateSerializer
 from rest_framework.response import Response
 from rest_framework.generics import UpdateAPIView, ListAPIView
 from rest_framework.pagination import PageNumberPagination
@@ -63,3 +63,29 @@ def get_post_view(request):
 
     serializer = PostSerializer(post)
     return Response(serializer.data)
+
+@api_view(['PUT',])
+@permission_classes((IsAuthenticated,))
+def change_post_view(request):
+    try:
+        post = Post.objects.get(pk = request.data['post_id'])
+        print(post)
+    except Post.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    user = request.user
+    if post.account_id != user:
+        return Response({'response':"You don't have permission to edit that."}) 
+        
+    if request.method == 'PUT':
+        serializer = PostUpdateSerializer(post, data=request.data, partial=True)
+        data = {}
+        if serializer.is_valid():
+            serializer.save()
+            data['response'] = 'UPDATE SUCCESS'
+            data['title'] = post.title
+            data['image_url'] = post.image_url
+            data['description'] = post.description
+            data['dollar_target'] = post.dollar_target
+            return Response(data=data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
