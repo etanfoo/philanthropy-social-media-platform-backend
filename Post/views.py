@@ -49,7 +49,6 @@ class PostListView(ListAPIView):
     
     def get_queryset(self):
         queryset = Post.objects.all().order_by('-time_created')
-
         return queryset
 
 @api_view(['GET'])
