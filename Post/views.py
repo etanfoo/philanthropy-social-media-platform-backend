@@ -123,11 +123,13 @@ def get_feed_view(request):
         user = request.user
         yeet = user.from_account_id.all()
         subscribing = [AccountProfileSerializer(y.to_account_id).data['pk'] for y in yeet]
-        queryset = Post.objects.filter(account_id__in=subscribing).order_by('-time_created').values()
+        queryset = Post.objects.filter(account_id__in=subscribing).order_by('-time_created')
+        postSet = [PostSerializer(p).data for p in queryset]
+        print(postSet)
         ret = []
-        for post in queryset:
-            if (post['is_shared_id'] is not None):
-                sharedPost = Post.objects.get(pk=post['is_shared_id'])
+        for post in postSet:
+            if (post['is_shared'] is not None):
+                sharedPost = Post.objects.get(pk=post['is_shared'])
                 post['original_post'] = PostSerializer(sharedPost).data
             else:
                 post['original_post'] = {}
