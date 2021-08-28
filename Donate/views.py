@@ -89,7 +89,7 @@ def delete_donate_view(request):
     
     user = request.user
     if donate.account_id_from != user:
-        return Response({'resonse': "You don't have permission to delete this post!"})
+        return Response({'response': "You don't have permission to delete this donation!"})
 
     if request.method == "DELETE":
         operation = donate.delete()

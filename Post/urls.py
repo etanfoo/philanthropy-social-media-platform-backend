@@ -9,4 +9,5 @@ urlpatterns = [
     path('share/', views.create_shared_post_view),
     path('feed/', views.get_feed_view),
     path('userposts/', views.ProfilePostsView.as_view()),
+    path('remove/', views.delete_post_view)
 ]
