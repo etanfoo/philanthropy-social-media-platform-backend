@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.generics import UpdateAPIView, ListAPIView
 from rest_framework.pagination import PageNumberPagination
 from Donate.models import Donate
-from Donate.serializers import DonateCreateSerializer, DonateUpdateSerializer
+from Donate.serializers import DonateCreateSerializer, DonateUpdateSerializer, DonateSerializer
 from Post.models import Post
 
 # Create your views here.
@@ -99,3 +99,18 @@ def delete_donate_view(request):
         else:
             data["failure"] = "delete failed"
         return Response(data=data)
+
+@permission_classes([])
+class ProfileDonatesView(ListAPIView):
+    serializer_class = DonateSerializer
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        user_id = self.request.GET.get('user_id')
+        if user_id is not None:
+            queryset = Donate.objects.filter(account_id_from=user_id).order_by('-start_date')
+            print(queryset)
+        else: 
+            queryset = Donate.objects.all().order_by('-start_date')
+
+        return queryset
