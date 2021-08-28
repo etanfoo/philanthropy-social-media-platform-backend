@@ -36,8 +36,11 @@ def create_participant_view(request):
 def delete_participant_view(request):
     res = {}
     event_id = request.data.get('event_id')
+    print(event_id)
     try:
         participant = Participant.objects.get(user_id=request.user.pk, event=event_id)
+        print("participant is")
+        print(participant)
     except:
         res['response'] = 'Participant at this event does not exist'
         return Response(res, status=status.HTTP_404_NOT_FOUND)
