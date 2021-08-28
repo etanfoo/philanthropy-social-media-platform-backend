@@ -1,4 +1,9 @@
 #from apscheduler.schedulers.background import BackgroundScheduler
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "zorlvan_enterprise.settings")
+import django
+django.setup()
+from django.core.management import call_command
 from Post.models import Post
 from Donate.models import Donate
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -7,9 +12,9 @@ import math
 #sched = BackgroundScheduler()
 sched = BlockingScheduler()
 
-@sched.scheduled_job('interval', minutes = 1)
+@sched.scheduled_job('interval', seconds = 1)
 def timed_job():
-    #print('This job is run every 1 minute')
+    print('This job is run every 1 minute')
     all_donations = Donate.objects.all()
     for donation in all_donations:
         if (donation.is_recurring):
@@ -28,7 +33,7 @@ def timed_job():
                 #print(newx.days)
                 #If i want to run everyday
                 #if (newx.days % donation.occurence == 0):
-                # if ((newx.seconds % 60) % donation.occurence == 0):
+                #if ((newx.seconds % 60) % donation.occurence == 0):
                 if ((math.floor(newx.total_seconds()/60) - 600) % 60 == 0):
                     #print((newx.seconds % 60) % donation.occurence)
                     prev_current_dollar = cur_post[0]['current_dollar']
@@ -40,8 +45,8 @@ def timed_job():
                     #donation.update(times_donated = donation.times_donated + 1)
                     donation.times_donated = donation.times_donated + 1
                     donation.save()
-                    #print("printing current dollar")
-                    #print(prev_current_dollar)
+                    # print("printing current dollar")
+                    # print(prev_current_dollar)
                     # print("donation amount is")
                     # print(donation.amount)
                     # print("times donated is")
