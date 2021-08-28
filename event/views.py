@@ -95,6 +95,17 @@ class ProfileEventsView(ListAPIView):
 
         return queryset
 
+@api_view(['GET', ])
+@permission_classes((IsAuthenticated,))
+def get_user_attending_events_view(request):
+    user = request.user.pk
+    #eventset = user.event.all()
+    eventset = Participant.objects.filter(user_id=user)
+    print(eventset)
+    ret = [EventSerializer(y.event).data for y in eventset]
+    return Response({'events': ret})
+
+
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def get_event_view(request):
