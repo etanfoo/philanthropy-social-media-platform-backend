@@ -78,3 +78,24 @@ def change_donate_view(request):
             data['is_recurring'] = donate.is_recurring
             return Response(data=data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE', ])
+@permission_classes((IsAuthenticated,))
+def delete_donate_view(request):
+    try:
+        donate = Donate.objects.get(pk = request.data['donate_id'])
+    except Donate.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    user = request.user
+    if donate.account_id_from != user:
+        return Response({'resonse': "You don't have permission to delete this post!"})
+
+    if request.method == "DELETE":
+        operation = donate.delete()
+        data = {}
+        if operation:
+            data["success"] = "delete successful"
+        else:
+            data["failure"] = "delete failed"
+        return Response(data=data)
