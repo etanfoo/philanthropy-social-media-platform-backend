@@ -1,2 +1,2 @@
 web: gunicorn zorlvan_enterprise.wsgi --log-file -
-clock: python Donate/recurring_payment.py
+clock: python recurring_payment.py
