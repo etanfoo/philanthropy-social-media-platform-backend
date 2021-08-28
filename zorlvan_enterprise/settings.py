@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'Post',
     'Donate',
     'Subscription',
+    'event',
+    'participant',
 
     # allow cors
     'corsheaders',
