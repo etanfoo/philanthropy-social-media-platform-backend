@@ -113,15 +113,15 @@ class ProfilePostsView(ListAPIView):
         return queryset
 
 
-'''
-@permission_classes([])
-class PostListView(ListAPIView):
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def get_feed_view():
     serializer_class = PostSerializer
     pagination_class = PageNumberPagination
     
     def get_queryset(self):
         queryset = Post.objects.all().exclude(is_shared__isnull=True).order_by('-time_created')
-        return queryset'''
+        return queryset
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
