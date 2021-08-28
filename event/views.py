@@ -93,3 +93,4 @@ class ProfileEventsView(ListAPIView):
             queryset = Event.objects.all().order_by('-date')
 
         return queryset
+
