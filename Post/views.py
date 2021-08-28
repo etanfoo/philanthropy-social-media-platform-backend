@@ -28,7 +28,7 @@ def create_post_view(request):
             data['description'] = post.description
             data['is_mission'] = post.is_mission
             if (post.is_shared is not None):
-                data['is_shared'] = post.is_shared
+                data['is_shared'] = post.is_shared.pk
             else:
                 data['is_shared'] = None
             data['time_created'] = post.time_created
