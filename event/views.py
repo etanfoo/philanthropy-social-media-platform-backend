@@ -78,3 +78,18 @@ class EventListView(ListAPIView):
     def get_queryset(self):
         queryset = Event.objects.all().order_by('-date')
         return queryset
+
+@permission_classes([])
+class ProfileEventsView(ListAPIView):
+    serializer_class = EventSerializer
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        user_id = self.request.GET.get('user_id')
+        if user_id is not None:
+            queryset = Event.objects.filter(creator=user_id).order_by('-date')
+            print(queryset)
+        else: 
+            queryset = Event.objects.all().order_by('-date')
+
+        return queryset
