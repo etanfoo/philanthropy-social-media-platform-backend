@@ -10,7 +10,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.db.models import Q
-from account.serializers import RegistrationSerializer, AccountProfileSerializer
+from account.serializers import AccountPasswordUpdateSerializer, RegistrationSerializer, AccountProfileSerializer, AccountUpdateSerializer
 from account.models import Account
 from rest_framework.authtoken.models import Token
 from account.validators import valid_email, valid_username
@@ -127,3 +127,41 @@ def get_subscribing_view(request):
     yeet = user.from_account_id.all()
     ret = [AccountProfileSerializer(y.to_account_id).data for y in yeet]
     return Response({'subscribing': ret})
+
+
+@api_view(['PUT',])
+@permission_classes((IsAuthenticated, ))
+def update_account_view(request):
+    try:
+        account = request.user
+    except Account.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = AccountUpdateSerializer(account, data=request.data, partial=True)
+    data = {}
+    if serializer.is_valid():
+        serializer.save()
+        data['response'] = 'Update success!'
+        return Response(data=data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT',])
+@permission_classes((IsAuthenticated, ))
+def update_password_view(request):
+    try:
+        account = request.user
+    except Account.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    print(request.data)
+    serializer = AccountPasswordUpdateSerializer(account, data=request.data, partial=True)
+    data = {}
+    if serializer.is_valid():
+        print(account.password)
+        print(request.data['password'])
+        account.set_password(request.data['password'])
+        account.save()
+        print(account.password)
+        data['response'] = 'Successfully changed password!'
+        return Response(data=data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

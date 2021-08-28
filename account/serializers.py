@@ -40,3 +40,14 @@ class AccountProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = ['pk', 'email', 'username', 'first_name', 'last_name', 'bio', 'profile_pic', 'is_org', 'subscriber_count', 'subscribing_count']
+
+class AccountUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ['first_name', 'last_name', 'profile_pic', 'bio']
+
+class AccountPasswordUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ['password']
+    

@@ -6,7 +6,9 @@ from account.views import(
     logout_view,
     ApiAccountListView,
     get_subscriber_view,
-    get_subscribing_view
+    get_subscribing_view,
+    update_account_view,
+    update_password_view
 )
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -19,5 +21,7 @@ urlpatterns = [
     path('logout', logout_view),
     path('explore', ApiAccountListView.as_view()),
     path('subscribers', get_subscriber_view),
-    path('subscribing', get_subscribing_view)
+    path('subscribing', get_subscribing_view),
+    path('edit', update_account_view),
+    path('changepassword', update_password_view),
 ]
