@@ -37,8 +37,56 @@ def create_post_view(request):
             data['dollar_target'] = post.dollar_target
             data['current_dollar'] = post.current_dollar
             data['username'] = post.account_id.username
-            print("can return")
+            # print("can return")
             print(data)
+            return Response(data = data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def create_shared_post_view(request):
+
+    if request.method == 'POST':
+        data = request.data.copy()
+        data['account_id'] = request.user.pk
+        data['is_shared'] = data['original_post_id']
+        serializer = PostCreateSerializer(data = data)
+        
+        original_post_id = data['original_post_id']
+        data = {}
+        if serializer.is_valid():
+            #print("serialiser is valid")
+            post = serializer.save()
+
+            data['post_id'] = post.pk
+            data['image_url'] = post.image_url
+            data['title'] = post.title
+            data['description'] = post.description
+            data['is_shared'] = original_post_id
+            data['time_created'] = post.time_created
+
+            original_data = {}
+            original_post = Post.objects.filter(pk = original_post_id)[0]
+
+            # original_data['post_id'] = original_post.pk
+            original_data['image_url'] = original_post.image_url
+            original_data['post_id'] = original_post.pk
+            original_data['title'] = original_post.title
+            original_data['description'] = original_post.description
+            original_data['is_mission'] = original_post.is_mission
+
+            # if (post.is_shared is not None):
+            #     original_data['is_shared'] = original_post.is_shared.pk
+            # else:
+            #     original_data['is_shared'] = None
+            original_data['time_created'] = original_post.time_created
+            original_data['dollar_target'] = original_post.dollar_target
+            original_data['current_dollar'] = original_post.current_dollar
+            original_data['username'] = original_post.account_id.username
+
+            data['original_post'] = original_data
+            # print(data)
+            # print("can return")
             return Response(data = data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
