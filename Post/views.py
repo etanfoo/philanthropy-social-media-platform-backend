@@ -112,7 +112,7 @@ class ProfilePostsView(ListAPIView):
 
         return queryset
 
-
+'''
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def get_feed_view():
@@ -121,7 +121,7 @@ def get_feed_view():
     
     def get_queryset(self):
         queryset = Post.objects.all().exclude(is_shared__isnull=True).order_by('-time_created')
-        return queryset
+        return queryset'''
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
