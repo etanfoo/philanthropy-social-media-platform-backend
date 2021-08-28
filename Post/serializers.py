@@ -13,6 +13,20 @@ class PostSerializer(serializers.ModelSerializer):
         username = post.account_id.username
         return username
 
+class PostUpdateSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = Post
+        fields = ['title', 'image_url', 'description', 'dollar_target']   
+
+     def validate(self, post):
+        try:
+            title = post['title']
+            image_url = post['image_url']
+            description = post['description']
+            dollar_target = post['dollar_target']
+        except KeyError:
+            pass
+        return post 
 
 class PostCreateSerializer(serializers.ModelSerializer):
     class Meta:
