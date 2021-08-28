@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.generics import UpdateAPIView, ListAPIView
 from rest_framework.pagination import PageNumberPagination
 from event.models import Event
-from event.serializers import EventCreateSerializer, EventUpdateSerializer
+from event.serializers import EventCreateSerializer, EventUpdateSerializer, EventSerializer
 
 # Create your views here.
 # Headers: Authorization: Token <token>
@@ -19,7 +19,7 @@ def create_event_view(request):
         data['creator'] = request.user.pk
         serializer = EventCreateSerializer(data = data)
         
-        fields = ['creator', 'title', 'location', 'date', 'description', 'duration']
+        fields = ['creator', 'title', 'location', 'date', 'description', 'duration', 'event_pic', 'participant_count']
 
         data = {}
         if serializer.is_valid():
@@ -33,6 +33,8 @@ def create_event_view(request):
             data['description'] = event.description
             data['duration'] = event.duration
             data['creator_username'] = event.creator.username
+            data['event_pic'] = event.event_pic
+            data['participant_count'] = event.participant_count
 
             print("can return")
             print(data)
@@ -63,5 +65,16 @@ def change_event_view(request):
             data['date'] = event.date
             data['description'] = event.description
             data['duration'] = event.duration
+            data['event_pic'] = event.event_pic
+            data['participant_count'] = event.participant_count
             return Response(data=data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@permission_classes([])
+class EventListView(ListAPIView):
+    serializer_class = EventSerializer
+    pagination_class = PageNumberPagination
+    
+    def get_queryset(self):
+        queryset = Event.objects.all().order_by('-date')
+        return queryset

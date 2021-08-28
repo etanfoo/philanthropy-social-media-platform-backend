@@ -7,9 +7,11 @@ class Event(models.Model):
     creator = models.ForeignKey(Account, on_delete = models.CASCADE)
     title = models.TextField()
     location = models.TextField()
-    date = models.DateTimeField(default = timezone.now)
+    date = models.DateTimeField()
     description = models.TextField()
     duration = models.IntegerField()
+    event_pic = models.TextField(blank=True, null=True)
+    participant_count = models.IntegerField(default=0)
 
     def __str__(self):
         return str(self.creator) + ", " + str(self.title)
