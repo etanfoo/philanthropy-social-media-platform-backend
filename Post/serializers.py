@@ -7,7 +7,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['pk', 'image_url', 'username', 'account_id', 'title', 'description', 'is_mission', 'is_shared', 'time_created','dollar_target', 'current_dollar', 'original_post_id']
+        fields = ['pk', 'image_url', 'username', 'account_id', 'title', 'description', 'is_mission', 'is_shared', 'time_created','dollar_target', 'current_dollar']
 
     def get_username_from_account(self, post):
         username = post.account_id.username
