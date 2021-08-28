@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.generics import UpdateAPIView, ListAPIView
 from rest_framework.pagination import PageNumberPagination
 from Donate.models import Donate
-from Donate.serializers import DonateCreateSerializer
+from Donate.serializers import DonateCreateSerializer, DonateUpdateSerializer
 from Post.models import Post
 
 # Create your views here.
@@ -52,3 +52,50 @@ def create_donate_view(request):
                 print(data)
                 return Response(data = data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PUT',])
+@permission_classes((IsAuthenticated,))
+def change_donate_view(request):
+    try:
+        donate = Donate.objects.get(pk = request.data['donate_id'])
+        print(donate)
+    except Donate.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    user = request.user
+    if donate.account_id_from != user:
+        return Response({'response':"You don't have permission to edit that."}) 
+        
+    if request.method == 'PUT':
+        serializer = DonateUpdateSerializer(donate, data=request.data, partial=True)
+        data = {}
+        if serializer.is_valid():
+            serializer.save()
+            data['response'] = 'UPDATE SUCCESS'
+            data['amount'] = donate.amount
+            data['occurence'] = donate.occurence
+            data['is_recurring'] = donate.is_recurring
+            return Response(data=data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE', ])
+@permission_classes((IsAuthenticated,))
+def delete_donate_view(request):
+    try:
+        donate = Donate.objects.get(pk = request.data['donate_id'])
+    except Donate.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    user = request.user
+    if donate.account_id_from != user:
+        return Response({'resonse': "You don't have permission to delete this post!"})
+
+    if request.method == "DELETE":
+        operation = donate.delete()
+        data = {}
+        if operation:
+            data["success"] = "delete successful"
+        else:
+            data["failure"] = "delete failed"
+        return Response(data=data)

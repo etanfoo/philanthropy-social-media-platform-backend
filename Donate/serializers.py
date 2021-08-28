@@ -32,3 +32,18 @@ class DonateCreateSerializer(serializers.ModelSerializer):
             
         except KeyError:
             raise serializers.ValidationError({"response": "You must have an account_id_from, post_id_to, amount and is_recurring"}) 
+
+
+class DonateUpdateSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = Donate
+        fields = ['amount', 'is_recurring', 'occurence']   
+
+     def validate(self, donate):
+        try:
+            amount = donate['amount']
+            occurence = donate['occurence']
+            is_recurring = donate['is_recurring']
+        except KeyError:
+            pass
+        return donate 
