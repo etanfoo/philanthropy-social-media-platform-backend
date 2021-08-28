@@ -25,5 +25,6 @@ urlpatterns = [
     path('account/', include('Subscription.urls')),
     path('post/', include('Post.urls')),
     path('donate/', include('Donate.urls')),
-    path('event/', include('event.urls'))
+    path('event/', include('event.urls')),
+    path('participant/', include('participant.urls'))
 ]
