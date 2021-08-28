@@ -116,7 +116,7 @@ class ApiAccountListView(ListAPIView):
 def get_subscriber_view(request):
     user = request.user
     yeet = user.to_account_id.all()
-    ret = [AccountProfileSerializer(y.to_account_id).data for y in yeet]
+    ret = [AccountProfileSerializer(y.from_account_id).data for y in yeet]
     return Response({'subscribers': ret})
 
 
@@ -125,5 +125,5 @@ def get_subscriber_view(request):
 def get_subscribing_view(request):
     user = request.user
     yeet = user.from_account_id.all()
-    ret = [AccountProfileSerializer(y.from_account_id).data for y in yeet]
+    ret = [AccountProfileSerializer(y.to_account_id).data for y in yeet]
     return Response({'subscribing': ret})
