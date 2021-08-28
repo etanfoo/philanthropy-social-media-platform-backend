@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.generics import UpdateAPIView, ListAPIView
 from rest_framework.pagination import PageNumberPagination
 from event.models import Event
-from event.serializers import EventCreateSerializer
+from event.serializers import EventCreateSerializer, EventUpdateSerializer
 
 # Create your views here.
 # Headers: Authorization: Token <token>
@@ -37,4 +37,31 @@ def create_event_view(request):
             print("can return")
             print(data)
             return Response(data = data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT',])
+@permission_classes((IsAuthenticated,))
+def change_event_view(request):
+    try:
+        event = Event.objects.get(pk = request.data['event_id'])
+        print(event)
+    except Event.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    user = request.user
+    if event.creator != user:
+        return Response({'response':"You don't have permission to edit that."}) 
+        
+    if request.method == 'PUT':
+        serializer = EventUpdateSerializer(event, data=request.data, partial=True)
+        data = {}
+        if serializer.is_valid():
+            serializer.save()
+            data['response'] = 'UPDATE SUCCESS'
+            data['title'] = event.title
+            data['location'] = event.location
+            data['date'] = event.date
+            data['description'] = event.description
+            data['duration'] = event.duration
+            return Response(data=data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

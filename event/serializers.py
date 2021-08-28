@@ -27,3 +27,20 @@ class EventCreateSerializer(serializers.ModelSerializer):
             
         except KeyError:
             raise serializers.ValidationError({"response": "You must have an event creator, title, location, description and duration"}) 
+
+
+class EventUpdateSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = Event
+        fields = ['title', 'location', 'date', 'description', 'duration']   
+
+     def validate(self, event):
+        try:
+            title = event['title']
+            location = event['location']
+            date = event['date']
+            description = event['description']
+            duration = event['duration']
+        except KeyError:
+            pass
+        return event 
