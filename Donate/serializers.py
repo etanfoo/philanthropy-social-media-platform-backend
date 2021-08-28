@@ -1,6 +1,23 @@
 from rest_framework import serializers
 from Donate.models import Donate
 
+
+class DonateSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField('get_username_from_account')
+    title = serializers.SerializerMethodField('get_post_title_from_post')
+
+    def get_username_from_account(self, donate):
+        username = donate.account_id_from.username
+        return username
+
+    def get_post_title_from_post(self, donate):
+        pt = donate.post_id_to.title
+        return pt
+
+    class Meta:
+        model = Donate
+        fields = ['pk', 'account_id_from', 'username', 'post_id_to', 'title', 'amount', 'is_recurring', 'start_date', 'occurence', 'times_donated']
+
 class DonateCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Donate
