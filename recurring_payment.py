@@ -12,7 +12,7 @@ import math
 #sched = BackgroundScheduler()
 sched = BlockingScheduler()
 
-@sched.scheduled_job('interval', seconds = 1)
+@sched.scheduled_job('interval', minutes = 1)
 def timed_job():
     print('This job is run every 1 minute')
     all_donations = Donate.objects.all()
@@ -34,7 +34,9 @@ def timed_job():
                 #If i want to run everyday
                 #if (newx.days % donation.occurence == 0):
                 #if ((newx.seconds % 60) % donation.occurence == 0):
-                if ((math.floor(newx.total_seconds()/60) - 600) % 60 == 0):
+                #print(((math.floor(newx.total_seconds()/60)) % 60) % donation.occurence)
+                if (((math.floor(newx.total_seconds()/60)) % 60) % donation.occurence == 0):
+                    print("automatically donating money")
                     #print((newx.seconds % 60) % donation.occurence)
                     prev_current_dollar = cur_post[0]['current_dollar']
                     if (prev_current_dollar is None):
@@ -45,12 +47,12 @@ def timed_job():
                     #donation.update(times_donated = donation.times_donated + 1)
                     donation.times_donated = donation.times_donated + 1
                     donation.save()
-                    # print("printing current dollar")
-                    # print(prev_current_dollar)
-                    # print("donation amount is")
-                    # print(donation.amount)
-                    # print("times donated is")
-                    # print(donation.times_donated)
-                    # print("_____________________________")
+                    print("printing current dollar")
+                    print(prev_current_dollar)
+                    print("donation amount is")
+                    print(donation.amount)
+                    print("times donated is")
+                    print(donation.times_donated)
+                    print("_____________________________")
 
 sched.start()
