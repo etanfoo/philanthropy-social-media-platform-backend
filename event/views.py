@@ -7,6 +7,7 @@ from rest_framework.generics import UpdateAPIView, ListAPIView
 from rest_framework.pagination import PageNumberPagination
 from event.models import Event
 from event.serializers import EventCreateSerializer, EventUpdateSerializer, EventSerializer
+from participant.models import Participant
 
 # Create your views here.
 # Headers: Authorization: Token <token>
@@ -105,3 +106,29 @@ def get_event_view(request):
 
     serializer = EventSerializer(event)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def is_attending_event(request):
+    #event_id = request.GET.get('event_id')
+    data = {
+        'user_id': request.user.pk,
+        'event': request.GET.get('event_id'),
+    }
+    print(data['event'])
+    try:
+        is_attending = Participant.objects.filter(user_id=data['user_id']).filter(event=data['event'])
+    except:
+        return Response({'response': 'Participant at this Event does not exist!'}, status=status.HTTP_404_NOT_FOUND)
+
+    #serializer = EventSerializer(is_attending)
+    if (is_attending.exists()):
+        ret = {
+            'attending' : True
+        }
+    else:
+        ret = {
+            'attending' : False
+        }
+    #print(is_attending)
+    return Response(ret)
