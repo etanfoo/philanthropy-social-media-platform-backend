@@ -51,3 +51,15 @@ class PostListView(ListAPIView):
         queryset = Post.objects.all().order_by('-time_created')
 
         return queryset
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def get_post_view(request):
+    post_id = request.GET.get('post_id')
+    try:
+        post = Post.objects.get(pk=post_id)
+    except:
+        return Response({'response': 'Post does not exist!'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = PostSerializer(post)
+    return Response(serializer.data)
