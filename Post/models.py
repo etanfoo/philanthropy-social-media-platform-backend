@@ -11,8 +11,8 @@ class Post(models.Model):
     is_mission = models.BooleanField()
     is_shared = models.ForeignKey('self', on_delete = models.CASCADE, null = True, blank = True, default = None)
     time_created = models.DateTimeField(default = timezone.now)
-    dollar_target = models.IntegerField(blank = True)
-    current_dollar = models.IntegerField(blank = True, default = 0)
+    dollar_target = models.IntegerField(blank = True, null = True)
+    current_dollar = models.IntegerField(blank = True, null = True)
 
     def __str__(self):
         return self.title
