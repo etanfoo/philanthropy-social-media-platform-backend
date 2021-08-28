@@ -59,7 +59,7 @@ class LoginView(APIView):
             res['username'] = account.username
             res['email'] = account.email
             res['first_name'] = account.first_name
-            res['last_name'] = account.first_name
+            res['last_name'] = account.last_name
             res['bio'] = account.bio
             res['profile_pic'] = account.profile_pic
             res['is_org'] = account.is_org

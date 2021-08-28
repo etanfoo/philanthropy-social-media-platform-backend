@@ -23,5 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
     path('account/', include('Subscription.urls')),
-    path('post/', include('Post.urls'))
+    path('post/', include('Post.urls')),
+    path('donate/', include('Donate.urls'))
 ]
