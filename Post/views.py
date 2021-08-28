@@ -8,7 +8,7 @@ from rest_framework.generics import UpdateAPIView, ListAPIView
 from rest_framework.pagination import PageNumberPagination
 from Post.models import Post
 from django.db.models import Q
-
+from account.serializers import AccountProfileSerializer
 # Create your views here.
 # Headers: Authorization: Token <token>
 @api_view(['POST'])
@@ -93,7 +93,7 @@ class PostListView(ListAPIView):
     pagination_class = PageNumberPagination
     
     def get_queryset(self):
-        queryset = Post.objects.all().exclude(is_shared__isnull=True).order_by('-time_created')
+        queryset = Post.objects.all().filter(is_shared__isnull=True).order_by('-time_created')
         return queryset
 
 
@@ -108,20 +108,18 @@ class ProfilePostsView(ListAPIView):
             queryset = Post.objects.filter(Q(account_id=user_id) & Q(is_shared__isnull=True)).order_by('-time_created')
             print(queryset)
         else: 
-            queryset = Post.objects.all().exclude(is_shared__isnull=True).order_by('-time_created')
+            queryset = Post.objects.all().filter(is_shared__isnull=True).order_by('-time_created')
 
         return queryset
 
-'''
+
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
-def get_feed_view():
-    serializer_class = PostSerializer
-    pagination_class = PageNumberPagination
-    
-    def get_queryset(self):
-        queryset = Post.objects.all().exclude(is_shared__isnull=True).order_by('-time_created')
-        return queryset'''
+def get_feed_view(request):
+    user = request.user
+    yeet = user.from_account_id.all()
+    ret = [AccountProfileSerializer(y.to_account_id).data.account_id for y in yeet]
+    return Response({'subscribing': ret})
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))

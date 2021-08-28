@@ -3,14 +3,19 @@ from Post.models import Post
 
 class PostSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField('get_username_from_account')
-
-    class Meta:
-        model = Post
-        fields = ['pk', 'image_url', 'username', 'account_id', 'title', 'description', 'is_mission', 'is_shared', 'time_created','dollar_target', 'current_dollar']
+    profile_pic = serializers.SerializerMethodField('get_profile_pic_from_account')
 
     def get_username_from_account(self, post):
         username = post.account_id.username
         return username
+
+    def get_profile_pic_from_account(self, post):
+        pfp = post.account_id.profile_pic
+        return pfp
+
+    class Meta:
+        model = Post
+        fields = ['pk', 'image_url', 'username', 'profile_pic', 'account_id', 'title', 'description', 'is_mission', 'is_shared', 'time_created', 'dollar_target', 'current_dollar']
 
 class PostUpdateSerializer(serializers.ModelSerializer):
      class Meta:
