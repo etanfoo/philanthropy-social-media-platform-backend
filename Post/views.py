@@ -9,6 +9,9 @@ from rest_framework.pagination import PageNumberPagination
 from Post.models import Post
 from django.db.models import Q
 from account.serializers import AccountProfileSerializer
+import json
+from django.core.serializers.json import DjangoJSONEncoder
+
 # Create your views here.
 # Headers: Authorization: Token <token>
 @api_view(['POST'])
@@ -116,10 +119,23 @@ class ProfilePostsView(ListAPIView):
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def get_feed_view(request):
-    user = request.user
-    yeet = user.from_account_id.all()
-    ret = [AccountProfileSerializer(y.to_account_id).data.account_id for y in yeet]
-    return Response({'subscribing': ret})
+    try:
+        user = request.user
+        yeet = user.from_account_id.all()
+        subscribing = [AccountProfileSerializer(y.to_account_id).data['pk'] for y in yeet]
+        queryset = Post.objects.filter(account_id__in=subscribing).order_by('-time_created').values()
+        ret = []
+        for post in queryset:
+            if (post['is_shared_id'] is not None):
+                sharedPost = Post.objects.get(pk=post['is_shared_id'])
+                post['original_post'] = PostSerializer(sharedPost).data
+            else:
+                post['original_post'] = {}
+            ret.append(post)
+        
+        return Response({'posts': ret})
+    except:
+        return Response({'response': 'u done goofed'}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
