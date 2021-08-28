@@ -28,10 +28,12 @@ SECRET_KEY = '&ekguwgds40pam6j0m-ba+nv4+z=&i(##639v0sl3a!on8b_#4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'zorlvan-enterprise-backend.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'zorlvan-enterprise-backend.herokuapp.com', "https://phil-great.herokuapp.com", "http://phil-great.herokuapp.com"]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://phil-great.herokuapp.com",
+    "http://phil-great.herokuapp.com"
 ]
 
 # Application definition
