@@ -30,4 +30,25 @@ def create_participant_view(request):
         print('unsucessful participant save')
         # Response(data, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+@permission_classes((IsAuthenticated,))
+def delete_participant_view(request):
+    res = {}
+    event_id = request.data.get('event_id')
+    try:
+        participant = Participant.objects.get(user_id=request.user.pk, event=event_id)
+    except:
+        res['response'] = 'Participant at this event does not exist'
+        return Response(res, status=status.HTTP_404_NOT_FOUND)
     
+    deletion = participant.delete()
+    res = {}
+    if deletion:
+        res['response'] = 'Unattend Event Successful!'
+        prev_participant_count = Event.objects.filter(pk=event_id).values('participant_count')
+        print(prev_participant_count[0]['participant_count'])
+        Event.objects.filter(pk = event_id).update(participant_count = prev_participant_count[0]['participant_count'] - 1)
+        return Response(res)
+    res['response'] = 'Unattend Event failed!'
+    return Response(res, status=status.HTTP_400_BAD_REQUEST)

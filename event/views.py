@@ -94,3 +94,14 @@ class ProfileEventsView(ListAPIView):
 
         return queryset
 
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def get_event_view(request):
+    event_id = request.GET.get('event_id')
+    try:
+        event = Event.objects.get(pk=event_id)
+    except:
+        return Response({'response': 'Event does not exist!'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = EventSerializer(event)
+    return Response(serializer.data)
