@@ -25,25 +25,30 @@ def create_donate_view(request):
         if serializer.is_valid():
             #print("serialiser is valid")
             donate = serializer.save()
-            data['donate_id'] = donate.pk
-            data['account_id_from'] = donate.account_id_from.pk
-            data['post_id_to'] = donate.post_id_to.pk
-            data['amount'] = donate.amount
-            data['is_recurring'] = donate.is_recurring
-            if (donate.occurence is not None):
-                data['occurence'] = donate.occurence
+            if (donate.post_id_to.is_mission != True):
+                return Response({'response': 'Post is not a mission'}, status=status.HTTP_404_NOT_FOUND)
             else:
-                data['occurence'] = None
-            data['start_date'] = donate.start_date
-            data['times_donated'] = donate.times_donated
-            data['username'] = donate.account_id_from.username
+                data['donate_id'] = donate.pk
+                data['account_id_from'] = donate.account_id_from.pk
+                data['post_id_to'] = donate.post_id_to.pk
+                data['amount'] = donate.amount
+                data['is_recurring'] = donate.is_recurring
+                if (donate.occurence is not None):
+                    data['occurence'] = donate.occurence
+                else:
+                    data['occurence'] = None
+                data['start_date'] = donate.start_date
+                data['times_donated'] = donate.times_donated
+                data['username'] = donate.account_id_from.username
 
-            post = Post.objects.get(pk = data['post_id_to'])
-            prev_current_dollar = post.current_dollar
-            Post.objects.filter(pk=data['post_id_to']).update(current_dollar = prev_current_dollar + data['amount'])
-            print(prev_current_dollar)
+                post = Post.objects.get(pk = data['post_id_to'])
+                prev_current_dollar = post.current_dollar
+                if (prev_current_dollar is None):
+                    prev_current_dollar = 0
+                Post.objects.filter(pk=data['post_id_to']).update(current_dollar = prev_current_dollar + data['amount'])
+                print(prev_current_dollar)
 
-            print("can return")
-            print(data)
-            return Response(data = data)
+                print("can return")
+                print(data)
+                return Response(data = data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
