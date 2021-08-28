@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from Post.models import Post
 
-#Not sure what to do with this atm
 class PostSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField('get_username_from_account')
 

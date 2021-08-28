@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.generics import UpdateAPIView, ListAPIView
 from rest_framework.pagination import PageNumberPagination
 from Post.models import Post
+from django.db.models import Q
 
 # Create your views here.
 # Headers: Authorization: Token <token>
@@ -51,7 +52,6 @@ def create_shared_post_view(request):
         data['account_id'] = request.user.pk
         data['is_shared'] = data['original_post_id']
         serializer = PostCreateSerializer(data = data)
-        
         original_post_id = data['original_post_id']
         data = {}
         if serializer.is_valid():
@@ -64,11 +64,8 @@ def create_shared_post_view(request):
             data['description'] = post.description
             data['is_shared'] = original_post_id
             data['time_created'] = post.time_created
-
             original_data = {}
             original_post = Post.objects.filter(pk = original_post_id)[0]
-
-            # original_data['post_id'] = original_post.pk
             original_data['image_url'] = original_post.image_url
             original_data['post_id'] = original_post.pk
             original_data['title'] = original_post.title
@@ -96,8 +93,35 @@ class PostListView(ListAPIView):
     pagination_class = PageNumberPagination
     
     def get_queryset(self):
-        queryset = Post.objects.all().order_by('-time_created')
+        queryset = Post.objects.all().exclude(is_shared__isnull=True).order_by('-time_created')
         return queryset
+
+
+@permission_classes([])
+class ProfilePostsView(ListAPIView):
+    serializer_class = PostSerializer
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        user_id = self.request.GET.get('user_id')
+        if user_id is not None:
+            queryset = Post.objects.filter(Q(account_id=user_id) & Q(is_shared__isnull=True)).order_by('-time_created')
+            print(queryset)
+        else: 
+            queryset = Post.objects.all().exclude(is_shared__isnull=True).order_by('-time_created')
+
+        return queryset
+
+
+'''
+@permission_classes([])
+class PostListView(ListAPIView):
+    serializer_class = PostSerializer
+    pagination_class = PageNumberPagination
+    
+    def get_queryset(self):
+        queryset = Post.objects.all().exclude(is_shared__isnull=True).order_by('-time_created')
+        return queryset'''
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
