@@ -174,3 +174,24 @@ def change_post_view(request):
             data['dollar_target'] = post.dollar_target
             return Response(data=data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE', ])
+@permission_classes((IsAuthenticated,))
+def delete_post_view(request):
+    try:
+        post = Post.objects.get(pk = request.data['post_id'])
+    except Post.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    user = request.user
+    if post.account_id != user:
+        return Response({'response': "You don't have permission to delete this post!"})
+
+    if request.method == "DELETE":
+        operation = post.delete()
+        data = {}
+        if operation:
+            data["success"] = "delete successful"
+        else:
+            data["failure"] = "delete failed"
+        return Response(data=data)
